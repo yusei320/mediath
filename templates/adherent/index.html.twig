@@ -1,0 +1,52 @@
+{% extends 'base_modern.html.twig' %}
+
+{% block title %}Adhérents{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">👥 Liste des adhérents</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prénom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Statut</th>
+                    <th>Date d'inscription</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for adherent in adherents %}
+                <tr>
+                    <td>{{ adherent.nom }}</td>
+                    <td>{{ adherent.prenom }}</td>
+                    <td>{{ adherent.email }}</td>
+                    <td>{{ adherent.telephone ?? '-' }}</td>
+                    <td>
+                        {% if adherent.actif %}
+                            <span class="badge bg-success">Actif</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Inactif</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ adherent.dateInscription|date('d/m/Y') }}</td>
+                    <td>
+                        <a href="{{ path('adherent_show', {'id': adherent.id}) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i> Voir
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucun adhérent trouvé.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

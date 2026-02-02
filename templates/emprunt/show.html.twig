@@ -1,0 +1,63 @@
+{% extends 'base_modern.html.twig' %}
+
+{% block title %}Détails de l'emprunt{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h2>📖 Détails de l'emprunt</h2>
+                </div>
+                <div class="card-body">
+                    <h4>Adhérent</h4>
+                    <p>
+                        <strong>{{ emprunt.adherent.prenom }} {{ emprunt.adherent.nom }}</strong><br>
+                        {{ emprunt.adherent.email }}<br>
+                        {{ emprunt.adherent.telephone }}
+                    </p>
+
+                    <hr>
+
+                    <h4>Document emprunté</h4>
+                    <p>
+                        <strong>{{ emprunt.document.titre }}</strong><br>
+                        Type : {{ emprunt.document.type }}<br>
+                        Auteur : {{ emprunt.document.auteur }}
+                    </p>
+
+                    <hr>
+
+                    <h4>Informations d'emprunt</h4>
+                    <div class="mb-2">
+                        <strong>Date d'emprunt :</strong> {{ emprunt.dateEmprunt|date('d/m/Y') }}
+                    </div>
+                    <div class="mb-2">
+                        <strong>Date de retour prévue :</strong> {{ emprunt.dateRetourPrevue|date('d/m/Y') }}
+                    </div>
+                    <div class="mb-2">
+                        <strong>Date de retour effective :</strong> 
+                        {{ emprunt.dateRetourEffective ? emprunt.dateRetourEffective|date('d/m/Y') : 'Non rendu' }}
+                    </div>
+                    <div class="mb-2">
+                        <strong>Statut :</strong>
+                        {% if emprunt.statut == 'en_cours' %}
+                            <span class="badge bg-warning">En cours</span>
+                        {% elseif emprunt.statut == 'en_retard' %}
+                            <span class="badge bg-danger">En retard</span>
+                        {% elseif emprunt.statut == 'termine' %}
+                            <span class="badge bg-success">Terminé</span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="{{ path('emprunt_index') }}" class="btn btn-secondary">
+                        ← Retour à la liste
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

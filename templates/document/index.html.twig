@@ -1,0 +1,351 @@
+{% extends 'base_modern.html.twig' %}
+
+{% block title %}Documents - Médiathèque{% endblock %}
+
+{% block body %}
+<div class="container" style="padding: 4rem 2rem;">
+    <!-- Header avec recherche -->
+    <div style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 3rem;
+        flex-wrap: wrap;
+        gap: 2rem;
+    ">
+        <div>
+            <h1 style="margin-bottom: 0.5rem;">
+                <i class="fas fa-book" style="color: var(--accent-blue);"></i>
+                Catalogue des documents
+            </h1>
+            <p style="color: var(--text-muted); font-size: 1.1rem;">
+                Parcourez et gérez tous les documents de la médiathèque
+            </p>
+        </div>
+        
+        <a href="{{ path('document_new') }}" class="btn-modern btn-primary">
+            <i class="fas fa-plus"></i>
+            Nouveau document
+        </a>
+    </div>
+
+    <!-- Barre de recherche et filtres -->
+    <div class="glass-effect" style="
+        padding: 1.5rem;
+        border-radius: 1rem;
+        margin-bottom: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    ">
+        <div style="flex: 1; min-width: 250px;">
+            <input 
+                type="text" 
+                id="searchInput"
+                placeholder="Rechercher un document..."
+                style="
+                    width: 100%;
+                    padding: 0.75rem 1rem 0.75rem 3rem;
+                    background: rgba(255, 255, 255, 0.05);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 0.5rem;
+                    color: var(--text-light);
+                    font-size: 1rem;
+                "
+            >
+            <i class="fas fa-search" style="
+                position: relative;
+                left: 1rem;
+                top: -2rem;
+                color: var(--text-muted);
+            "></i>
+        </div>
+        
+        <select id="typeFilter" style="
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+        ">
+            <option value="">Tous les types</option>
+            <option value="Livre">Livres</option>
+            <option value="DVD">DVDs</option>
+            <option value="CD">CDs</option>
+            <option value="Magazine">Magazines</option>
+            <option value="BD">BDs</option>
+        </select>
+        
+        <select id="disponibiliteFilter" style="
+            padding: 0.75rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 0.5rem;
+            color: var(--text-light);
+            cursor: pointer;
+        ">
+            <option value="">Tous</option>
+            <option value="disponible">Disponibles</option>
+            <option value="emprunte">Empruntés</option>
+        </select>
+    </div>
+
+    <!-- Grille de documents -->
+    <div id="documentsGrid" style="
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 2rem;
+    ">
+        {% for document in documents %}
+            <div class="document-card service-card" 
+                 data-titre="{{ document.titre|lower }}"
+                 data-auteur="{{ document.auteur|lower }}"
+                 data-type="{{ document.type }}"
+                 data-disponible="{{ document.disponible ? 'disponible' : 'emprunte' }}"
+                 style="
+                    background: var(--card-bg);
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    border-radius: 1rem;
+                    padding: 1.5rem;
+                    transition: all 0.3s ease;
+                    cursor: pointer;
+                    position: relative;
+                    overflow: hidden;
+                "
+                 onclick="window.location='{{ path('document_show', {'id': document.id}) }}'"
+            >
+                <!-- Badge de type -->
+                <div style="
+                    position: absolute;
+                    top: 1rem;
+                    right: 1rem;
+                    padding: 0.375rem 0.75rem;
+                    background: {% if document.type == 'Livre' %}rgba(59, 130, 246, 0.2){% elseif document.type == 'DVD' %}rgba(236, 72, 153, 0.2){% elseif document.type == 'CD' %}rgba(139, 92, 246, 0.2){% else %}rgba(6, 182, 212, 0.2){% endif %};
+                    border-radius: 0.5rem;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: var(--text-light);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                ">
+                    <i class="fas fa-{% if document.type == 'Livre' %}book{% elseif document.type == 'DVD' %}film{% elseif document.type == 'CD' %}compact-disc{% else %}newspaper{% endif %}"></i>
+                    {{ document.type }}
+                </div>
+
+                <!-- Badge de disponibilité -->
+                <div style="
+                    position: absolute;
+                    top: 1rem;
+                    left: 1rem;
+                    padding: 0.375rem 0.75rem;
+                    background: {{ document.disponible ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)' }};
+                    border: 1px solid {{ document.disponible ? 'rgba(16, 185, 129, 0.3)' : 'rgba(239, 68, 68, 0.3)' }};
+                    border-radius: 0.5rem;
+                    font-size: 0.75rem;
+                    font-weight: 600;
+                    color: {{ document.disponible ? '#10b981' : '#ef4444' }};
+                ">
+                    <i class="fas fa-{{ document.disponible ? 'check-circle' : 'times-circle' }}"></i>
+                    {{ document.disponible ? 'Disponible' : 'Emprunté' }}
+                </div>
+
+                <!-- Contenu -->
+                <div style="margin-top: 4rem;">
+                    <h3 style="
+                        font-size: 1.25rem;
+                        margin-bottom: 0.5rem;
+                        color: var(--text-light);
+                        display: -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow: hidden;
+                    ">
+                        {{ document.titre }}
+                    </h3>
+                    
+                    <p style="
+                        color: var(--accent-cyan);
+                        font-weight: 600;
+                        margin-bottom: 1rem;
+                        font-size: 0.95rem;
+                    ">
+                        <i class="fas fa-user-edit"></i>
+                        {{ document.auteur }}
+                    </p>
+
+                    {% if document.resume %}
+                        <p style="
+                            color: var(--text-muted);
+                            font-size: 0.9rem;
+                            line-height: 1.6;
+                            margin-bottom: 1rem;
+                            display: -webkit-box;
+                            -webkit-line-clamp: 3;
+                            -webkit-box-orient: vertical;
+                            overflow: hidden;
+                        ">
+                            {{ document.resume }}
+                        </p>
+                    {% endif %}
+
+                    <div style="
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+                        padding-top: 1rem;
+                        border-top: 1px solid rgba(255, 255, 255, 0.1);
+                        margin-top: auto;
+                    ">
+                        <span style="
+                            color: var(--text-muted);
+                            font-size: 0.85rem;
+                        ">
+                            <i class="fas fa-barcode"></i>
+                            {{ document.isbn }}
+                        </span>
+                        
+
+                    </div>
+
+                    <!-- Actions -->
+                    <div style="
+                        display: flex;
+                        gap: 0.5rem;
+                        margin-top: 1rem;
+                    ">
+                        <a href="{{ path('document_show', {'id': document.id}) }}" 
+                           onclick="event.stopPropagation()"
+                           style="
+                            flex: 1;
+                            padding: 0.5rem;
+                            background: rgba(59, 130, 246, 0.2);
+                            border: 1px solid rgba(59, 130, 246, 0.3);
+                            border-radius: 0.5rem;
+                            color: var(--accent-blue);
+                            text-align: center;
+                            text-decoration: none;
+                            font-size: 0.9rem;
+                            font-weight: 600;
+                            transition: all 0.3s ease;
+                        "
+                        onmouseover="this.style.background='rgba(59, 130, 246, 0.3)'"
+                        onmouseout="this.style.background='rgba(59, 130, 246, 0.2)'"
+                        >
+                            <i class="fas fa-eye"></i> Voir
+                        </a>
+                        
+                        <a href="{{ path('document_edit', {'id': document.id}) }}"
+                           onclick="event.stopPropagation()" 
+                           style="
+                            flex: 1;
+                            padding: 0.5rem;
+                            background: rgba(139, 92, 246, 0.2);
+                            border: 1px solid rgba(139, 92, 246, 0.3);
+                            border-radius: 0.5rem;
+                            color: var(--accent-blue);
+                            text-align: center;
+                            text-decoration: none;
+                            font-size: 0.9rem;
+                            font-weight: 600;
+                            transition: all 0.3s ease;
+                        "
+                        onmouseover="this.style.background='rgba(139, 92, 246, 0.3)'"
+                        onmouseout="this.style.background='rgba(139, 92, 246, 0.2)'"
+                        >
+                            <i class="fas fa-edit"></i> Éditer
+                        </a>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div style="
+                grid-column: 1 / -1;
+                text-align: center;
+                padding: 4rem 2rem;
+            ">
+                <i class="fas fa-book" style="
+                    font-size: 4rem;
+                    color: var(--text-muted);
+                    margin-bottom: 1rem;
+                "></i>
+                <h3 style="color: var(--text-muted);">Aucun document trouvé</h3>
+                <p style="color: var(--text-muted); margin-top: 0.5rem;">
+                    Commencez par ajouter votre premier document
+                </p>
+                <a href="{{ path('document_new') }}" class="btn-modern btn-primary" style="margin-top: 1.5rem;">
+                    <i class="fas fa-plus"></i>
+                    Ajouter un document
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Message si aucun résultat -->
+    <div id="noResults" style="
+        display: none;
+        text-align: center;
+        padding: 4rem 2rem;
+    ">
+        <i class="fas fa-search" style="
+            font-size: 4rem;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        "></i>
+        <h3 style="color: var(--text-muted);">Aucun résultat</h3>
+        <p style="color: var(--text-muted); margin-top: 0.5rem;">
+            Essayez de modifier vos critères de recherche
+        </p>
+    </div>
+</div>
+
+<script>
+    // Fonction de recherche et filtrage
+    function filterDocuments() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const typeFilter = document.getElementById('typeFilter').value;
+        const disponibiliteFilter = document.getElementById('disponibiliteFilter').value;
+        
+        const cards = document.querySelectorAll('.document-card');
+        let visibleCount = 0;
+        
+        cards.forEach(card => {
+            const titre = card.dataset.titre;
+            const auteur = card.dataset.auteur;
+            const type = card.dataset.type;
+            const disponible = card.dataset.disponible;
+            
+            const matchSearch = titre.includes(searchTerm) || auteur.includes(searchTerm);
+            const matchType = !typeFilter || type === typeFilter;
+            const matchDisponibilite = !disponibiliteFilter || disponible === disponibiliteFilter;
+            
+            if (matchSearch && matchType && matchDisponibilite) {
+                card.style.display = 'block';
+                visibleCount++;
+            } else {
+                card.style.display = 'none';
+            }
+        });
+        
+        document.getElementById('noResults').style.display = visibleCount === 0 ? 'block' : 'none';
+        document.getElementById('documentsGrid').style.display = visibleCount === 0 ? 'none' : 'grid';
+    }
+    
+    document.getElementById('searchInput').addEventListener('input', filterDocuments);
+    document.getElementById('typeFilter').addEventListener('change', filterDocuments);
+    document.getElementById('disponibiliteFilter').addEventListener('change', filterDocuments);
+    
+    // Animation hover sur les cartes
+    document.querySelectorAll('.document-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-10px)';
+            this.style.boxShadow = '0 20px 40px -10px rgba(59, 130, 246, 0.3)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = 'none';
+        });
+    });
+</script>
+{% endblock %}

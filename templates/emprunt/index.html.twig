@@ -1,0 +1,54 @@
+{% extends 'base_modern.html.twig' %}
+
+{% block title %}Emprunts{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <h1 class="mb-4">📖 Liste des emprunts</h1>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Adhérent</th>
+                    <th>Document</th>
+                    <th>Date d'emprunt</th>
+                    <th>Retour prévu</th>
+                    <th>Retour effectif</th>
+                    <th>Statut</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for emprunt in emprunts %}
+                <tr>
+                    <td>{{ emprunt.adherent.prenom }} {{ emprunt.adherent.nom }}</td>
+                    <td>{{ emprunt.document.titre }}</td>
+                    <td>{{ emprunt.dateEmprunt|date('d/m/Y') }}</td>
+                    <td>{{ emprunt.dateRetourPrevue|date('d/m/Y') }}</td>
+                    <td>{{ emprunt.dateRetourEffective ? emprunt.dateRetourEffective|date('d/m/Y') : '-' }}</td>
+                    <td>
+                        {% if emprunt.statut == 'en_cours' %}
+                            <span class="badge bg-warning">En cours</span>
+                        {% elseif emprunt.statut == 'en_retard' %}
+                            <span class="badge bg-danger">En retard</span>
+                        {% elseif emprunt.statut == 'termine' %}
+                            <span class="badge bg-success">Terminé</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{{ path('emprunt_show', {'id': emprunt.id}) }}" class="btn btn-sm btn-primary">
+                            <i class="fas fa-eye"></i> Voir
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="text-center">Aucun emprunt trouvé.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
