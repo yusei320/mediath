@@ -1,0 +1,53 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Refuser la demande d'emprunt{% endblock %}
+
+{% block main %}
+<div class="row justify-content-center">
+    <div class="col-md-8"></div>
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h4 class="card-title mb-4">Détails de la demande</h4>
+                <ul class="list-group list-group-flush mb-4">
+                    <li class="list-group-item"><strong>Adhérent :</strong> {{ demande.adherent.prenom }} {{ demande.adherent.nom }}</li>
+                    <li class="list-group-item"><strong>Document :</strong> {{ demande.document.titre }}</li>
+                    <li class="list-group-item"><strong>Date demande :</strong> {{ demande.dateDemande|date('d/m/Y H:i') }}</li>
+                    {% if demande.messageAdherent %}
+                        <li class="list-group-item"><strong>Message adhérent :</strong> {{ demande.messageAdherent }}</li>
+                    {% endif %}
+                </ul>
+
+                <hr>
+
+                <form method="post">
+                    <div class="alert alert-danger">
+                        <strong><i class="fas fa-exclamation-triangle me-2"></i> Attention :</strong> Le refus sera notifié à l'adhérent dans son espace personnel.
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="motif_refus" class="form-label">Motif du refus * (obligatoire)</label>
+                        <textarea 
+                            id="motif_refus" 
+                            name="motif_refus" 
+                            class="form-control" 
+                            rows="5" 
+                            required
+                            placeholder="Exemple : Document en cours de réparation, Emprunts en retard non régularisés..."
+                        ></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                        <a href="{{ ea_url().setController('App\\Controller\\Admin\\DemandeEmpruntCrudController').setAction('index') }}" 
+                        class="btn btn-secondary me-md-2">
+                            <i class="fas fa-arrow-left me-2"></i> Annuler
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times-circle me-2"></i> Confirmer le refus
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

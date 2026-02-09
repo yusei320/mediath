@@ -11,45 +11,58 @@
 <div class="container-fluid">
     <!-- KPIs -->
     <div class="row mb-4">
-        <div class="col-md-4">
-            <div class="card bg-primary text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-uppercase mb-1">Total Documents</h6>
-                            <h2 class="mb-0">{{ totalDocuments }}</h2>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card bg-primary text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-uppercase mb-1">Total Documents</h6>
+                                    <h2 class="mb-0">{{ total_documents }}</h2>
+                                </div>
+                                <i class="fas fa-book fa-2x opacity-50"></i>
+                            </div>
                         </div>
-                        <i class="fas fa-book fa-2x opacity-50"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-success text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-uppercase mb-1">Adhérents Inscrits</h6>
-                            <h2 class="mb-0">{{ totalAdherents }}</h2>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card bg-success text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-uppercase mb-1">Disponibles</h6>
+                                    <h2 class="mb-0">{{ dispo_documents }}</h2>
+                                </div>
+                                <i class="fas fa-check-circle fa-2x opacity-50"></i>
+                            </div>
                         </div>
-                        <i class="fas fa-users fa-2x opacity-50"></i>
                     </div>
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card bg-info text-white h-100">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h6 class="text-uppercase mb-1">Total Emprunts</h6>
-                            <h2 class="mb-0">{{ totalEmprunts }}</h2>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card bg-warning text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-uppercase mb-1">Empruntés</h6>
+                                    <h2 class="mb-0">{{ emprunte_documents }}</h2>
+                                </div>
+                                <i class="fas fa-hand-holding fa-2x opacity-50"></i>
+                            </div>
                         </div>
-                        <i class="fas fa-exchange-alt fa-2x opacity-50"></i>
                     </div>
                 </div>
-            </div>
-        </div>
+                <div class="col-xl-3 col-md-6 mb-4">
+                    <div class="card bg-info text-white h-100">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="text-uppercase mb-1">Adhérents</h6>
+                                    <h2 class="mb-0">{{ total_adherents }}</h2>
+                                </div>
+                                <i class="fas fa-users fa-2x opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
     </div>
 
     <!-- Charts Grid -->
@@ -62,7 +75,7 @@
                 </div>
                 <div class="card-body">
                     <div style="height: 300px;">
-                        {{ render_chart(chartDocs) }}
+                        {{ render_chart(chart_docs) }}
                     </div>
                 </div>
             </div>
@@ -76,7 +89,7 @@
                 </div>
                 <div class="card-body">
                     <div style="height: 300px;">
-                         {{ render_chart(chartLoans) }}
+                         {{ render_chart(chart_emprunts) }}
                     </div>
                 </div>
             </div>
@@ -90,7 +103,7 @@
                 </div>
                 <div class="card-body">
                     <div style="height: 300px;">
-                         {{ render_chart(chartAdhesions) }}
+                         {{ render_chart(chart_adhesions) }}
                     </div>
                 </div>
             </div>
@@ -104,7 +117,7 @@
                 </div>
                 <div class="card-body">
                     <div style="height: 300px;">
-                         {{ render_chart(chartAvailability) }}
+                         {{ render_chart(chart_availability) }}
                     </div>
                 </div>
             </div>

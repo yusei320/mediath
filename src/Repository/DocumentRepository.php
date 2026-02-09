@@ -16,28 +16,56 @@ class DocumentRepository extends ServiceEntityRepository
         parent::__construct($registry, Document::class);
     }
 
-    //    /**
-    //     * @return Document[] Returns an array of Document objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('d.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Document[]
+     */
+    public function findDisponibles(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.disponible = :val')
+            ->setParameter('val', true)
+            ->orderBy('d.titre', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?Document
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * @return Document[]
+     */
+    public function search(string $query): array
+    {
+        return $this->createQueryBuilder('d')
+            ->andWhere('d.titre LIKE :query OR d.auteur LIKE :query OR d.type LIKE :query')
+            ->setParameter('query', '%' . $query . '%')
+            ->orderBy('d.titre', 'ASC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function countDisponibles(): int
+    {
+        return $this->createQueryBuilder('d')
+            ->select('count(d.id)')
+            ->andWhere('d.disponible = :val')
+            ->setParameter('val', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countTotal(): int
+    {
+        return $this->createQueryBuilder('d')
+            ->select('count(d.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countByType(): array
+    {
+        return $this->createQueryBuilder('d')
+            ->select('d.type, COUNT(d.id) as count')
+            ->groupBy('d.type')
+            ->getQuery()
+            ->getResult();
+    }
 }

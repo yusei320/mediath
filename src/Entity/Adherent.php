@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Entity;
 
 use App\Repository\AdherentRepository;
@@ -7,9 +9,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AdherentRepository::class)]
-class Adherent
+#[ORM\Index(columns: ['email'], name: 'idx_adherent_email')]
+#[ORM\Index(columns: ['nom'], name: 'idx_adherent_nom')]
+class Adherent implements \Stringable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -17,25 +22,33 @@ class Adherent
     private ?int $id = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 100)]
     private ?string $nom = null;
 
     #[ORM\Column(length: 100)]
+    #[Assert\NotBlank]
+    #[Assert\Length(max: 100)]
     private ?string $prenom = null;
 
     #[ORM\Column(length: 150)]
+    #[Assert\NotBlank]
+    #[Assert\Email]
     private ?string $email = null;
 
     #[ORM\Column(length: 20, nullable: true)]
+    #[Assert\Length(max: 20)]
     private ?string $telephone = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $adresse = null;
 
-    #[ORM\Column]
-    private ?\DateTime $dateInscription = null;
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Assert\Type("\DateTimeInterface")]
+    private ?\DateTimeInterface $dateInscription = null;
 
     #[ORM\Column]
-    private ?bool $actif = null;
+    private bool $actif = true;
 
     /**
      * @var Collection<int, Emprunt>
@@ -46,6 +59,7 @@ class Adherent
     public function __construct()
     {
         $this->emprunts = new ArrayCollection();
+        $this->dateInscription = new \DateTime();
     }
 
     public function getId(): ?int
@@ -113,19 +127,19 @@ class Adherent
         return $this;
     }
 
-    public function getDateInscription(): ?\DateTime
+    public function getDateInscription(): ?\DateTimeInterface
     {
         return $this->dateInscription;
     }
 
-    public function setDateInscription(\DateTime $dateInscription): static
+    public function setDateInscription(\DateTimeInterface $dateInscription): static
     {
         $this->dateInscription = $dateInscription;
 
         return $this;
     }
 
-    public function isActif(): ?bool
+    public function isActif(): bool
     {
         return $this->actif;
     }
@@ -160,10 +174,15 @@ class Adherent
         if ($this->emprunts->removeElement($emprunt)) {
             // set the owning side to null (unless already changed)
             if ($emprunt->getAdherent() === $this) {
-                $emprunt->setAdherent(null);
+                // Warning: Emprunt requires Adherent, handled by database constraints usually
             }
         }
 
         return $this;
+    }
+
+    public function __toString(): string
+    {
+        return $this->prenom . ' ' . $this->nom;
     }
 }

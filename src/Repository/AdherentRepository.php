@@ -40,4 +40,13 @@ class AdherentRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function countActifs(): int
+    {
+        return $this->createQueryBuilder('a')
+            ->select('count(a.id)')
+            ->andWhere('a.actif = :val')
+            ->setParameter('val', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

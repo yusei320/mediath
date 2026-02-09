@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes Emprunts - Espace Adhérent{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row">
+        <!-- Sidebar / Menu -->
+        <div class="col-md-3">
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-primary text-white">
+                    <i class="fas fa-user-circle me-2"></i> Mon Compte
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{{ path('adherent_espace') }}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-tachometer-alt me-2"></i> Tableau de bord
+                    </a>
+                    <a href="{{ path('adherent_emprunts') }}" class="list-group-item list-group-item-action active">
+                        <i class="fas fa-history me-2"></i> Historique des emprunts
+                    </a>
+                    <a href="{{ path('app_logout') }}" class="list-group-item list-group-item-action text-danger">
+                        <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content -->
+        <div class="col-md-9">
+            <h1 class="mb-4">Historique de mes emprunts</h1>
+
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    {% if emprunts is empty %}
+                        <p class="text-muted text-center my-3">Vous n'avez pas encore d'historique d'emprunts.</p>
+                    {% else %}
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Document</th>
+                                        <th>Date Emprunt</th>
+                                        <th>Date Retour Prévue</th>
+                                        <th>Date Retour Effective</th>
+                                        <th>Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for emprunt in emprunts %}
+                                        <tr>
+                                            <td>{{ emprunt.document.titre }}</td>
+                                            <td>{{ emprunt.dateEmprunt|date('d/m/Y') }}</td>
+                                            <td>{{ emprunt.dateRetourPrevue|date('d/m/Y') }}</td>
+                                            <td>
+                                                {% if emprunt.dateRetourEffective %}
+                                                    {{ emprunt.dateRetourEffective|date('d/m/Y') }}
+                                                {% else %}
+                                                    <span class="text-muted">-</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if emprunt.statut == 'en_retard' %}
+                                                    <span class="badge bg-danger">En retard</span>
+                                                {% elseif emprunt.statut == 'termine' %}
+                                                    <span class="badge bg-success">Terminé</span>
+                                                {% else %}
+                                                    <span class="badge bg-warning text-dark">En cours</span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

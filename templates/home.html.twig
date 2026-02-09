@@ -1,4 +1,4 @@
-{% extends 'base_modern.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}Accueil - Médiathèque Moderne{% endblock %}
 
@@ -21,9 +21,9 @@
                 Parcourir les documents
                 <i class="fas fa-arrow-right"></i>
             </a>
-            <a href="{{ path('adherent_index') }}" class="btn-modern btn-secondary">
-                Voir les adhérents
-                <i class="fas fa-users"></i>
+            <a href="{{ path('app_login') }}" class="btn-modern btn-secondary">
+                Se connecter
+                <i class="fas fa-sign-in-alt"></i>
             </a>
         </div>
     </div>
@@ -97,8 +97,8 @@
                 Inscrivez et gérez vos adhérents facilement. Suivez leur activité
                 et leur historique d'emprunts en temps réel.
             </p>
-            <a href="{{ path('adherent_index') }}" class="service-link">
-                En savoir plus <i class="fas fa-arrow-right"></i>
+            <a href="{{ path('app_login') }}" class="service-link">
+                Se connecter <i class="fas fa-arrow-right"></i>
             </a>
         </div>
         
@@ -111,8 +111,8 @@
                 Gérez les prêts et retours automatiquement. Détection des retards
                 et notifications pour les adhérents.
             </p>
-            <a href="{{ path('emprunt_index') }}" class="service-link">
-                En savoir plus <i class="fas fa-arrow-right"></i>
+            <a href="{{ path('adherent_espace') }}" class="service-link">
+                Mon Espace <i class="fas fa-arrow-right"></i>
             </a>
         </div>
         
@@ -250,15 +250,15 @@
             Rejoignez des centaines de bibliothèques qui utilisent déjà notre plateforme
         </p>
         <div class="btn-group" style="justify-content: center;">
-            {% if not app.user %}
-                <a href="{{ path('app_login') }}" class="btn-modern btn-primary">
-                    Commencer gratuitement
-                    <i class="fas fa-rocket"></i>
+            {% if is_granted('ROLE_BIBLIOTHECAIRE') %}
+                <a href="{{ path('admin') }}" class="btn-modern btn-primary">
+                    Administration
+                    <i class="fas fa-cogs"></i>
                 </a>
-            {% else %}
-                <a href="{{ path('document_new') }}" class="btn-modern btn-primary">
-                    Ajouter un document
-                    <i class="fas fa-plus"></i>
+            {% elseif is_granted('ROLE_ADHERENT') %}
+                <a href="{{ path('adherent_espace') }}" class="btn-modern btn-primary">
+                    Mon Espace
+                    <i class="fas fa-user"></i>
                 </a>
             {% endif %}
             <a href="#" class="btn-modern btn-secondary">

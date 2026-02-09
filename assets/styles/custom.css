@@ -284,6 +284,8 @@ h3 {
     background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-cyan) 100%);
     opacity: 0;
     transition: opacity 0.4s ease;
+    pointer-events: none;
+    z-index: 1;
 }
 
 .service-card:hover {

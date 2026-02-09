@@ -30,6 +30,10 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     {
         $email = trim($request->getPayload()->getString('_username'));
 
+        // DEBUG LOGGING
+        error_log("Attempting login for user: " . $email);
+        // error_log("Password provided: " . $request->getPayload()->getString('_password')); // Avoid logging plain passwords in production, OK for temp debug
+
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
         return new Passport(
@@ -46,6 +50,15 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     {
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
+        }
+
+        $user = $token->getUser();
+        if (in_array('ROLE_ADMIN', $user->getRoles(), true) || in_array('ROLE_BIBLIOTHECAIRE', $user->getRoles(), true)) {
+            return new RedirectResponse($this->urlGenerator->generate('admin'));
+        }
+
+        if (in_array('ROLE_ADHERENT', $user->getRoles(), true)) {
+            return new RedirectResponse($this->urlGenerator->generate('adherent_espace'));
         }
 
         return new RedirectResponse($this->urlGenerator->generate('app_home'));

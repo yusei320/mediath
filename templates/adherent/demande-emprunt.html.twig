@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Demande d'Emprunt{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0"><i class="fas fa-hand-paper me-2"></i> Demander l'emprunt</h3>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info">
+                        <h5 class="alert-heading">Document sélectionné :</h5>
+                        <p class="mb-0"><strong>{{ document.titre }}</strong> <span class="badge bg-secondary">{{ document.type }}</span></p>
+                    </div>
+
+                    {{ form_start(form) }}
+                        <div class="mb-3">
+                            {{ form_label(form.bibliothecaire, 'Bibliothécaire à qui adresser la demande *') }}
+                            {{ form_widget(form.bibliothecaire, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.bibliothecaire) }}
+                            <div class="form-text text-muted">Choisissez le bibliothécaire qui traitera votre demande.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.dateEmpruntSouhaitee, 'Date d\'emprunt souhaitée') }}
+                            {{ form_widget(form.dateEmpruntSouhaitee, {'attr': {'class': 'form-control'}}) }}
+                            {{ form_errors(form.dateEmpruntSouhaitee) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.dureeSouhaiteeJours, 'Durée souhaitée') }}
+                            {{ form_widget(form.dureeSouhaiteeJours, {'attr': {'class': 'form-select'}}) }}
+                            {{ form_errors(form.dureeSouhaiteeJours) }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ form_label(form.messageAdherent, 'Message (optionnel)') }}
+                            {{ form_widget(form.messageAdherent, {'attr': {'class': 'form-control', 'rows': 4, 'placeholder': 'Ajoutez un message pour le bibliothécaire...'}}) }}
+                            {{ form_errors(form.messageAdherent) }}
+                            <div class="form-text text-muted">500 caractères maximum</div>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-center mt-4">
+                            <a href="{{ path('document_index') }}" class="btn btn-secondary me-md-2">
+                                <i class="fas fa-times me-2"></i> Annuler
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-paper-plane me-2"></i> Envoyer la demande
+                            </button>
+                        </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
